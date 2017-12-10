@@ -1,0 +1,56 @@
+body {
+  background-color: darkseagreen;
+  color: white;
+}
+table {
+  background-color: darkslategray;
+  width: 80%;
+  margin: 40px auto;
+  border-collapse: collapse;
+  text-align: center;
+  box-shadow: 5px 10px 18px #888888;
+  font-family: 'Ubuntu', 'Tahoma';
+}
+td {
+  border: 1px solid white;
+  vertical-align: top;
+  padding: 4px;
+}
+.false {
+  background-color: red;
+}
+.true {
+  background-color: green;
+}
+td.id {
+  width: 4%;
+}
+td.player {
+  width: 28%;
+}
+td.vs {
+  width: 20%;
+  vertical-align: middle;
+  font-weight: bold;
+  font-size: 150%;
+}
+img {
+  width: 90px;
+  height: 90px;
+  display: block;
+  margin: 0 auto;
+  padding: 10px;
+}
+span.name {
+  display: block;
+  font-weight: bold;
+  font-size: 150%;
+}
+td.half {
+  width: 50%;
+}
+td.heading {
+  font-size: 130%;
+  font-weight: bold;
+  padding: 10px 30px;
+}
