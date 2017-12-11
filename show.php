@@ -12,12 +12,16 @@ function show($counter,// function to display data from one match in html table
   $db_loser_name,
   $db_loser_id,
   $db_score,
-  $prediction,
   $p1_m,
   $p2_m,
   $comOpp,
   $comOppResults,
-  $comOppRates)
+  $comOppRates,
+  $comOppRates2,
+  $comOppRates3,
+  $prediction,
+  $prediction2,
+  $prediction3)
 {
   $img = randomImages();
   ?>
@@ -79,13 +83,13 @@ function show($counter,// function to display data from one match in html table
           </td>
           <td>
             <?php
-              print_r ($comOppRates[$db_winner_id][$i]);
+              print_r (number_format(round((float)$comOppRates[$db_winner_id][$i] , 2), 2, '.', ''));
             ?>
           </td>
           <td><?php print_r ($comOpp['name'][$i]); echo(' ('); print_r ($comOpp['id'][$i]); echo(')'); ?></td>
           <td>
             <?php
-              print_r ($comOppRates[$db_loser_id][$i]);
+              print_r (number_format(round((float)$comOppRates[$db_loser_id][$i] , 2), 2, '.', ''));
             ?>
           </td>
           <td>
@@ -112,14 +116,14 @@ function show($counter,// function to display data from one match in html table
       </td>
       <td>
         <?php
-            $percent = round((float)$prediction['winner'] * 100 ) . '%';
+            $percent = number_format(round((float)$prediction['winner'] * 100 , 2), 2, '.', '') . '%';
             echo($percent);
         ?>
       </td>
       <td></td>
       <td>
         <?php
-            $percent = round((float)$prediction['loser'] * 100 ) . '%';
+            $percent = number_format(round((float)$prediction['loser'] * 100 , 2), 2, '.', '') . '%';
             echo($percent);
         ?>
       </td>
@@ -155,10 +159,250 @@ function show($counter,// function to display data from one match in html table
         if($prediction_result) echo("true");
         else echo("false");
       }
-      ?>">PREDICTION IS: <?php
+      else echo("undefined");
+      ?>">FIRST METHOD PREDICTION IS: <?php
       if(isset($prediction_result))
       {
         if($prediction_result) echo("TRUE");
+        else echo("FALSE");
+      } else echo("UNDEFINED");
+      ?></td>
+    </tr>
+    <?php
+      if(count($comOpp['id'])>0)
+      {
+    ?>
+    <tr>
+      <td colspan="5">SECOND METHOD</td>
+    </tr>
+    <tr>
+      <td colspan="5">COMMON OPPONENTS (<?php echo(count($comOpp['id'])); ?>)</td>
+    </tr>
+    <tr>
+      <td>results</td>
+      <td>rate</td>
+      <td>name</td>
+      <td>rate</td>
+      <td>results</td>
+    </tr>
+    <?php
+      for($i=0; $i<count($comOpp['id']); $i++)
+      {
+        ?>
+        <tr>
+          <td>
+            <?php
+            // $comOppResults[$player_id][$i]['wins'] = $wins;
+            // $comOppResults[$player_id][$i]['loses'] = $loses;
+            // $comOppRates[$player_id][$i] = $rate;
+            print_r ($comOppResults[$db_winner_id][$i]['wins']);
+            echo('-');
+            print_r ($comOppResults[$db_winner_id][$i]['loses']);
+            ?>
+          </td>
+          <td>
+            <?php
+              print_r (number_format(round((float)$comOppRates2[$db_winner_id][$i] , 2), 2, '.', ''));
+            ?>
+          </td>
+          <td><?php print_r ($comOpp['name'][$i]); echo(' ('); print_r ($comOpp['id'][$i]); echo(')'); ?></td>
+          <td>
+            <?php
+              print_r (number_format(round((float)$comOppRates2[$db_loser_id][$i] , 2), 2, '.', ''));
+            ?>
+          </td>
+          <td>
+            <?php
+            print_r ($comOppResults[$db_loser_id][$i]['wins']);
+            echo('-');
+            print_r ($comOppResults[$db_loser_id][$i]['loses']);
+            ?>
+          </td>
+        </tr>
+        <?php
+      }
+    ?>
+    <tr>
+      <td colspan="5">PREDICTION RESULT</td>
+    </tr>
+    <tr>
+      <td>
+        <?php
+            if($prediction2['winner'] > 0.5) echo('winner');
+            else if($prediction2['winner'] < 0.5) echo('loser');
+            else echo('unknown');
+        ?>
+      </td>
+      <td>
+        <?php
+            $percent = number_format(round((float)$prediction2['winner'] * 100 , 2), 2, '.', '') . '%';
+            echo($percent);
+        ?>
+      </td>
+      <td></td>
+      <td>
+        <?php
+            $percent = number_format(round((float)$prediction2['loser'] * 100 , 2), 2, '.', '') . '%';
+            echo($percent);
+        ?>
+      </td>
+      <td>
+        <?php
+            if($prediction2['loser'] > 0.5) echo('winner');
+            else if($prediction2['loser'] < 0.5) echo('loser');
+            else echo('unknown');
+        ?>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="5">REAL RESULT</td>
+    </tr>
+    <tr>
+      <td colspan="2">winner</td>
+      <td>
+        <?php
+          print_r ($db_score);
+        ?>
+      </td>
+      <td colspan="2">loser</td>
+    </tr>
+    <?php
+      }
+    ?>
+    <tr>
+      <td colspan="5" class="<?php
+      if($prediction2 != false && $prediction2['winner'] > 0.5) $prediction_result2 = true;
+      else if($prediction2 != false && $prediction2['winner'] < 0.5) $prediction_result2 = false;
+      if(isset($prediction_result2))
+      {
+        if($prediction_result2) echo("true");
+        else echo("false");
+      }
+      else echo("undefined");
+      ?>"> SECOND METHOD PREDICTION IS: <?php
+      if(isset($prediction_result2))
+      {
+        if($prediction_result2) echo("TRUE");
+        else echo("FALSE");
+      } else echo("UNDEFINED");
+      ?></td>
+    </tr>
+
+    <?php
+      if(count($comOpp['id'])>0)
+      {
+    ?>
+    <tr>
+      <td colspan="5">THIRD METHOD</td>
+    </tr>
+    <tr>
+      <td colspan="5">COMMON OPPONENTS (<?php echo(count($comOpp['id'])); ?>)</td>
+    </tr>
+    <tr>
+      <td>results</td>
+      <td>rate</td>
+      <td>name</td>
+      <td>rate</td>
+      <td>results</td>
+    </tr>
+    <?php
+      for($i=0; $i<count($comOpp['id']); $i++)
+      {
+        ?>
+        <tr>
+          <td>
+            <?php
+            // $comOppResults[$player_id][$i]['wins'] = $wins;
+            // $comOppResults[$player_id][$i]['loses'] = $loses;
+            // $comOppRates[$player_id][$i] = $rate;
+            print_r ($comOppResults[$db_winner_id][$i]['wins']);
+            echo('-');
+            print_r ($comOppResults[$db_winner_id][$i]['loses']);
+            ?>
+          </td>
+          <td>
+            <?php
+              print_r (number_format(round((float)$comOppRates3[$db_winner_id][$i] , 2), 2, '.', ''));
+            ?>
+          </td>
+          <td><?php print_r ($comOpp['name'][$i]); echo(' ('); print_r ($comOpp['id'][$i]); echo(')'); ?></td>
+          <td>
+            <?php
+              print_r (number_format(round((float)$comOppRates3[$db_loser_id][$i] , 2), 2, '.', ''));
+            ?>
+          </td>
+          <td>
+            <?php
+            print_r ($comOppResults[$db_loser_id][$i]['wins']);
+            echo('-');
+            print_r ($comOppResults[$db_loser_id][$i]['loses']);
+            ?>
+          </td>
+        </tr>
+        <?php
+      }
+    ?>
+    <tr>
+      <td colspan="5">PREDICTION RESULT</td>
+    </tr>
+    <tr>
+      <td>
+        <?php
+            if($prediction3['winner'] > 0.5) echo('winner');
+            else if($prediction3['winner'] < 0.5) echo('loser');
+            else echo('unknown');
+        ?>
+      </td>
+      <td>
+        <?php
+            $percent = number_format(round((float)$prediction3['winner'] * 100 , 2), 2, '.', '') . '%';
+            echo($percent);
+        ?>
+      </td>
+      <td></td>
+      <td>
+        <?php
+            $percent = number_format(round((float)$prediction3['loser'] * 100 , 2), 2, '.', '') . '%';
+            echo($percent);
+        ?>
+      </td>
+      <td>
+        <?php
+            if($prediction3['loser'] > 0.5) echo('winner');
+            else if($prediction3['loser'] < 0.5) echo('loser');
+            else echo('unknown');
+        ?>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="5">REAL RESULT</td>
+    </tr>
+    <tr>
+      <td colspan="2">winner</td>
+      <td>
+        <?php
+          print_r ($db_score);
+        ?>
+      </td>
+      <td colspan="2">loser</td>
+    </tr>
+    <?php
+      }
+    ?>
+    <tr>
+      <td colspan="5" class="<?php
+      if($prediction3 != false && $prediction3['winner'] > 0.5) $prediction_result3 = true;
+      else if($prediction3 != false && $prediction3['winner'] < 0.5) $prediction_result3 = false;
+      if(isset($prediction_result3))
+      {
+        if($prediction_result3) echo("true");
+        else echo("false");
+      }
+      else echo("undefined");
+      ?>"> THIRD METHOD PREDICTION IS: <?php
+      if(isset($prediction_result3))
+      {
+        if($prediction_result3) echo("TRUE");
         else echo("FALSE");
       } else echo("UNDEFINED");
       ?></td>
