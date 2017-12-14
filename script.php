@@ -1,5 +1,6 @@
 <?php
-$matches = 1000;// number of matches from database to analyze
+$matchesFrom = 5000;// matches from database to analyze
+$matchesTo = 5010;
 
 include 'show.php';// contains function to display data in html table
 
@@ -10,6 +11,7 @@ function resultToValue($result)// function converts accurate result from string 
   $length = strlen($result);
   $i = 0;
   do {
+    if($result[$i] == "R" OR $result[$i] == "W") break;
     $wgems += $result[$i];
     $i+=2;
     $lgems += $result[$i];
@@ -17,7 +19,8 @@ function resultToValue($result)// function converts accurate result from string 
     if($result[$i] == '(') $i+=3;
     if($result[$i] == ' ') $i+=1;
   } while ($i < $length);
-  $value = $wgems / ($wgems + $lgems);
+  if(($wgems + $lgems) != 0) $value = $wgems / ($wgems + $lgems);
+  else $value = 0.5;
   return $value;
 }
 
@@ -113,9 +116,13 @@ $query = new \MongoDB\Driver\Query($filter, $options);
 $rows   = $mongo->executeQuery('tenis.matches', $query);
 
 $counter = 0;
+$realCounter = 0;
 foreach ($rows as $document)
 {
-  if($counter++ > $matches-1) break;
+  $counter++;
+  if($counter < $matchesFrom) continue;
+  if($counter > $matchesTo) break;
+  $realCounter++;
   $comOpp = commonOpponents($document->winner_id,$document->loser_id);
   if(count($comOpp['id'])>0)
   {
@@ -229,19 +236,19 @@ foreach ($rows as $document)
     $prediction3);
 
   // statistics of predictions
-  $predictionStats['comOpp'][$counter-1] = count($comOpp['id']);
-  if($prediction != null AND $prediction['winner'] != 0.5) $predictionStats['prediction'][$counter-1] = $prediction['winner'];
-  else $predictionStats['prediction'][$counter-1] = null;
+  $predictionStats['comOpp'][$realCounter-1] = count($comOpp['id']);
+  if($prediction != null AND $prediction['winner'] != 0.5) $predictionStats['prediction'][$realCounter-1] = $prediction['winner'];
+  else $predictionStats['prediction'][$realCounter-1] = null;
 
   // statistics of predictions second method
-  $predictionStats2['comOpp'][$counter-1] = count($comOpp['id']);
-  if($prediction2 != null AND $prediction2['winner'] != 0.5) $predictionStats2['prediction'][$counter-1] = $prediction2['winner'];
-  else $predictionStats2['prediction'][$counter-1] = null;
+  $predictionStats2['comOpp'][$realCounter-1] = count($comOpp['id']);
+  if($prediction2 != null AND $prediction2['winner'] != 0.5) $predictionStats2['prediction'][$realCounter-1] = $prediction2['winner'];
+  else $predictionStats2['prediction'][$realCounter-1] = null;
 
   // statistics of predictions third method
-  $predictionStats3['comOpp'][$counter-1] = count($comOpp['id']);
-  if($prediction3 != null AND $prediction3['winner'] != 0.5) $predictionStats3['prediction'][$counter-1] = $prediction3['winner'];
-  else $predictionStats3['prediction'][$counter-1] = null;
+  $predictionStats3['comOpp'][$realCounter-1] = count($comOpp['id']);
+  if($prediction3 != null AND $prediction3['winner'] != 0.5) $predictionStats3['prediction'][$realCounter-1] = $prediction3['winner'];
+  else $predictionStats3['prediction'][$realCounter-1] = null;
   }
 // counting statistics of all predictions
 ?>
